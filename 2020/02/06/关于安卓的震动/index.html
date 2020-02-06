@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hans" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>关于安卓的震动 - Rinka的IT实验室</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Rinka,"> 
+    <meta name="description" content="
+关于安卓的震动普通震动前情提要安卓提供了一个名为Vibrator的抽象类来实现手机的震动
+由于是抽象类，我们不可以通过new直接实例化，而需要通过
+1Vibrator v = (Vibrator),"> 
+    <meta name="author" content="Rinka Wang"> 
+    <link rel="alternative" href="atom.xml" title="Rinka的IT实验室" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon2.ico"> 
+    
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Rinka的IT实验室</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="icon-home image-icon" href="javascript:;" data-url="http://i-rinka.github.io"></a>
+    <div title="播放/暂停" class="icon-play"></div>
+    <h3 class="subtitle">关于安卓的震动</h3>
+    <div class="social">
+        <!--<div class="like-icon">-->
+            <!--<a href="javascript:;" class="likeThis active"><span class="icon-like"></span><span class="count">76</span></a>-->
+        <!--</div>-->
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">关于安卓的震动</h1>
+        <div class="stuff">
+            <span>二月 06, 2020</span>
+            
+  <ul class="post-tags-list" itemprop="keywords"><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E6%A0%87%E7%AD%BE1/" rel="tag">标签1</a></li><li class="post-tags-list-item"><a class="post-tags-list-link" href="/tags/%E6%A0%87%E7%AD%BE2/" rel="tag">标签2</a></li></ul>
+
+
+        </div>
+        <div class="content markdown">
+            <p><img src="C:%5CUsers%5CI_Rin%5CBlog%5Cthemes%5Cdiaspora%5Csource%5Cimg%5Candroid-10-android-q-name-logo-color-1581004387638.jpg" alt="img"></p>
+<h1 id="关于安卓的震动"><a href="#关于安卓的震动" class="headerlink" title="关于安卓的震动"></a>关于安卓的震动</h1><h2 id="普通震动"><a href="#普通震动" class="headerlink" title="普通震动"></a>普通震动</h2><h3 id="前情提要"><a href="#前情提要" class="headerlink" title="前情提要"></a>前情提要</h3><p>安卓提供了一个名为<code>Vibrator</code>的抽象类来实现手机的震动</p>
+<p>由于是抽象类，我们不可以通过new直接实例化，而需要通过</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);</span><br></pre></td></tr></table></figure>
+
+<p>来调用System Service中的VIBRATOR_SERVICE来创建我们的Vibrator</p>
+<p>由于在api26以后 Vibrator 中的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">vibrate</span> <span class="params">(<span class="keyword">long</span> milliseconds)</span>❌</span></span><br></pre></td></tr></table></figure>
+
+<p>已经被完全舍弃，所以我们需要使用类<code>VibrationEffect</code>来创建我们需要的震动样式</p>
+<h3 id="通过-VibrationEffect-类创建震动样式"><a href="#通过-VibrationEffect-类创建震动样式" class="headerlink" title="通过 VibrationEffect 类创建震动样式"></a>通过 VibrationEffect 类创建震动样式</h3><p>对比老方法直接在调用震动时输入参数，新方法选择创建震动样式后，再具体实现震动的调用，我认为比较显著优势有二：</p>
+<ul>
+<li>设计与实现分离<ul>
+<li>负责交互设计的人员可以很方便的调试并设计出一种比较好的震动样式，将其作为一个“模板”直接交付给负责实现的人员</li>
+<li>负责实现的人员可以简单的调用VibrationEffect类对应的样式而无需在使用时反复输入</li>
+</ul>
+</li>
+<li>增强拓展性<ul>
+<li>将震动的样式直接分离成一个新的类，无疑增强了震动样式的拓展性</li>
+<li>将来需要修改某一组件的震动样式时，可以直接修改对应VibrationEffect类的参数，而不需要更改其他代码</li>
+<li>可以直接将某一做的比较好的震动类型储存起来，方便未来继续使用</li>
+</ul>
+</li>
+</ul>
+<h4 id="创建实例"><a href="#创建实例" class="headerlink" title="创建实例"></a>创建实例</h4><p>在<a href="https://developer.android.com/reference/android/os/VibrationEffect?hl=en" target="_blank" rel="noopener">安卓官方文档</a>中，对于VibrationEffect可做到的效果已经解释的比较详细，故此处仅简单说明用法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//static VibrationEffect	createOneShot(long milliseconds, int amplitude)</span></span><br><span class="line">VibrationEffect ve = VibrationEffect.createOneShot(<span class="number">15</span>, <span class="number">200</span>);</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码创建了一个持续时间为15毫秒(<code>milliseconds</code>)，震动强度(<code>amplitude</code>)为200的震动样式<code>ve</code></p>
+<p><code>.createOneShot</code>表明这是一个仅震动一次的震动样式</p>
+<p>震动强度<code>amplitude</code>可以设定的强度范围为0~255。除了自己设置数值之外，还可以通过</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VibrationEffect ve = VibrationEffect.createOneShot(<span class="number">15</span>,VibrationEffect.DEFAULT_AMPLITUDE);</span><br></pre></td></tr></table></figure>
+
+<p>来使用预设的震动强度</p>
+<hr>
+<p>震动样式<code>ve</code>在实例化完后便可直接交付调用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//v为一个Vibrator类</span></span><br><span class="line">v.vibrate(ve);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>除了可以自己定义震动的样式外，在安卓Q(api29)中新增了一些预设的震动样式</p>
+<p>如模仿单击、双击效果的震动<code>EFFECT_CLICK</code>、<code>EFFECT_DOUBLE_CLICK</code>等</p>
+<p>可以通过</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">VibrationEffect ve = VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK);</span><br></pre></td></tr></table></figure>
+
+<p>来实例化预设的样式，不过由于目前大多手机并不运行安卓Q，故不建议使用</p>
+<h3 id="实现震动"><a href="#实现震动" class="headerlink" title="实现震动"></a>实现震动</h3><p>在上面一节中我们只实现了震动样式<code>VibrationEffect</code>的实例化，现在我们要通过<code>Vibrator</code>来使用设定好的震动样式。</p>
+<p>在使用震动时，需要向系统申请使用震动的权限，即在AndroidManifest.xml中添加</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">uses-permission</span> <span class="attr">android:name</span>=<span class="string">"android.permission.VIBRATE"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>不过这个并不需要手动操作，在AS中可以在实例化<code>Vibrator</code>后直接通过快捷键alt+Enter自动添加</p>
+<p>因为是一个抽象方法，因此实例化一个<code>Vibrator</code>需要使用<code>getSystemService(Context.VIBRATOR_SERVICE)</code>而不能通过new创建，正如最上面所提到的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);✅</span><br><span class="line">Vibrator v = <span class="keyword">new</span> Vibrator();❌</span><br></pre></td></tr></table></figure>
+
+<p>接着使用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v.vibrate(ve);</span><br></pre></td></tr></table></figure>
+
+<p>就可以直接调用我们创建好的震动样式<code>ve</code>，并产生对应的震动了。</p>
+<p>可以调用</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v.cancel();</span><br></pre></td></tr></table></figure>
+
+<p>来结束震动</p>
+<p>更多的<code>Vibrator</code>中的方法在<a href="https://developer.android.com/reference/android/os/Vibrator?hl=en" target="_blank" rel="noopener">安卓官方文档</a>中</p>
+<h3 id="此方法的局限性"><a href="#此方法的局限性" class="headerlink" title="此方法的局限性"></a>此方法的局限性</h3><p>我认为，此方法最初是<strong>分配给系统通知的</strong></p>
+<p><strong>因此将其用作按钮等控件的触摸反馈是及其不合适的</strong></p>
+<p>例如，如果用户将手机<code>振动与通知</code>-&gt;<code>通知</code>关闭后，应用对应的触摸反馈将不再会有震动产生（不同的rom可能效果不一样）</p>
+<img src="C:/Users/I_Rin/OneDrive/文档/Markdown/安卓/关于安卓的震动.assets/image-20200205161205148.png" alt="image-20200205161205148" style="zoom: 50%;" />
+
+<blockquote>
+<p>大概像这样，用户就收不到上面方法所产生的震动了</p>
+</blockquote>
+<p><strong>因此将其作为控件与用户交互产生的触摸反馈是及其不合适的</strong>（重要的话说两遍）</p>
+<p>如果制作震动的目的是为了用户交互体验上的反馈，请使用触觉震动(Haptic Feedback)</p>
+<h2 id="触觉震动"><a href="#触觉震动" class="headerlink" title="触觉震动"></a>触觉震动</h2>
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+        data-ae='true'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+        <div class='side'>
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#关于安卓的震动"><span class="toc-number">1.</span> <span class="toc-text">关于安卓的震动</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#普通震动"><span class="toc-number">1.1.</span> <span class="toc-text">普通震动</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#前情提要"><span class="toc-number">1.1.1.</span> <span class="toc-text">前情提要</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#通过-VibrationEffect-类创建震动样式"><span class="toc-number">1.1.2.</span> <span class="toc-text">通过 VibrationEffect 类创建震动样式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#创建实例"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">创建实例</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现震动"><span class="toc-number">1.1.3.</span> <span class="toc-text">实现震动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#此方法的局限性"><span class="toc-number">1.1.4.</span> <span class="toc-text">此方法的局限性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#触觉震动"><span class="toc-number">1.2.</span> <span class="toc-text">触觉震动</span></a></li></ol></li></ol>
+        </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+<script src="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</html>
